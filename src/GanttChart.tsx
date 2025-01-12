@@ -10,12 +10,23 @@ const column = [
     { type: 'date', id: 'End Date' },
 ];
 
+interface Trip {
+    id: string;
+    origin: string;
+    destination: string;
+    departureTime: string;
+    arrivalTime: string;
+}
+
 const GanttChart = () => {
-    const [trips, setTrips] = useState<any[]>([]);
-    const [groundTime, setGroundTime] = useState<any[]>([]);
+
+
+    const [trips, setTrips] = useState<(string | Trip)[][]>([]);
+    const [groundTime, setGroundTime] = useState<(string | { id: string; destination: string; groundTime: string; duration: number })[][]>([]);
 
     const getTrips = async () => {
         const res = await fetchTrips();
+        console.log('res:', res);
         const data: unknown[] = [column]; // 确保第一行是列定义
         Object.entries(res).forEach(([plane, trips]) => {
             (trips as { id: string; origin: string; destination: string; departureTime: string; arrivalTime: string }[]).forEach((trip) => {
@@ -59,7 +70,7 @@ const GanttChart = () => {
             <Chart
                 chartType='Timeline'
                 data={trips}
-                width='100vh'
+                width='130vh'
                 height='400px'
                 options={{
                     timeline: { showRowLabels: true },
@@ -74,7 +85,7 @@ const GanttChart = () => {
             <Chart
                 chartType='Timeline'
                 data={groundTime}
-                width='100vh'
+                width='130vh'
                 height='400px'
                 options={{
                     timeline: { showRowLabels: true },
